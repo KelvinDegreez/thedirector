@@ -23,4 +23,13 @@ public interface ScheduleDatabase {
     Double getMaxAllotmentForDayByType(LifeTask.Type type);
 
     Double getMaxAllotmentForWeekByType(LifeTask.Type type);
+
+    Double getRemainingTimeForDay(Date date);
+
+    Double getRemainingTimeForDayByLifeTaskType(Date date, LifeTask.Type type);
+
+    Double getRemainingTimeForWeek(Week week);
+
+    Double getRemainingTimeForWeekByLifeTaskType(Week week, LifeTask.Type type);
+
 }

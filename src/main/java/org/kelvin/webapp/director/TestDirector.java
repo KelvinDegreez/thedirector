@@ -20,18 +20,15 @@ public class TestDirector implements Director {
 
     @Override
     public boolean canDoToday(LifeTask newTask) {
-        return isPossible(db.getCurrentDayQuota(), newTask) &&
-               doesTaskFitLifeBalance(db.getCurrentDay(), newTask);
+        return isPossibleForDay(db.getCurrentDayQuota(), newTask) &&
+               doesTaskFitDayBalance(db.getCurrentDay(), newTask) &&
+               doesTaskFitWeekBalance(db.getCurrentWeek(), newTask);
     }
 
     @Override
     public boolean canDoThisWeek(LifeTask newTask) {
-//        Double maxPercentage = db.getMaxAllotmentForDayByType(newTask.getType());
-//        Map<LifeTask.Type, Double > map = db.getCurrentWeekPercentageMap();
-//        for(DayQuota quota : db.getCurrentWeekDayQuotas()) {
-//
-//        }
-        return false;
+        return isPossibleForWeek(db.getCurrentWeekDayQuotas(), newTask) &&
+               doesTaskFitWeekBalance(db.getCurrentWeek(), newTask);
     }
 
     @Override
@@ -49,13 +46,16 @@ public class TestDirector implements Director {
         return false;
     }
 
-    private boolean isPossible(DayQuota quota, LifeTask newTask){
+    private boolean isPossibleForDay(DayQuota quota, LifeTask newTask){
         return (quota.getTotalTaskTime() + newTask.getTimeCommitment() <= DataValues.MAX_DAY_TOTAL);
     }
 
-    private boolean doesTaskFitLifeBalance(Date date, LifeTask task){
-        return doesTaskFitDayBalance(date, task) &&
-               doesTaskFitWeekBalance(db.getWeekByDate(date), task);
+    private boolean isPossibleForWeek(List<DayQuota> quotas, LifeTask newTask){
+        double sumTotal = 0.0;
+        for(DayQuota quota : quotas){
+            sumTotal += quota.getTotalTaskTime();
+        }
+        return (sumTotal + newTask.getTimeCommitment() <= DataValues.MAX_WEEK_TOTAL);
     }
 
     private boolean doesTaskFitDayBalance(Date date, LifeTask task){

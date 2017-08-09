@@ -5,6 +5,7 @@ package org.kelvin.webapp;
 import com.google.gson.*;
 import org.apache.commons.io.IOUtils;
 import org.kelvin.webapp.apiObjects.*;
+import org.kelvin.webapp.schedule.LifeTask;
 import org.kelvin.webapp.tools.CommonUtils;
 
 import javax.inject.Singleton;
@@ -29,6 +30,16 @@ public class FakeApi {
         if (fakeData == null) {
             fakeData = new FakeApiServer();
         }
+    }
+
+    @POST
+    @Consumes("application/json")
+    @Path("post-example/")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response postExample(LifeTask task) {
+        int pause=0;
+        pause++;
+        return Response.status(ApiServer.HttpCode.SUCCESS.code).entity("test").build();
     }
 
     @GET
@@ -81,13 +92,7 @@ public class FakeApi {
         return Response.status(ApiServer.HttpCode.SUCCESS.code).entity("test").build();
     }
 
-    @POST
-    @Consumes("application/json")
-    @Path("post-example/")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response postExample(Object object) {
-        return Response.status(ApiServer.HttpCode.SUCCESS.code).entity("test").build();
-    }
+
 
     @POST
     @Path("post-with-file-example/")

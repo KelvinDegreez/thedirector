@@ -2,6 +2,7 @@ package org.kelvin.webapp.tools;
 
 
 
+import org.kelvin.webapp.director.DataValues;
 import org.kelvin.webapp.schedule.LifeTask;
 import org.kelvin.webapp.schedule.Week;
 
@@ -315,5 +316,18 @@ public class CommonUtils {
             }
         }
         return sumAllotment;
+    }
+
+    public static DataValues.DayOfWeek getDayOfWeekForDate(Date date){
+        switch (date.getDay()){
+            case 0: return DataValues.DayOfWeek.SUNDAY;
+            case 1: return DataValues.DayOfWeek.MONDAY;
+            case 2: return DataValues.DayOfWeek.TUESDAY;
+            case 3: return DataValues.DayOfWeek.WEDNESDAY;
+            case 4: return DataValues.DayOfWeek.THRUSDAY;
+            case 5: return DataValues.DayOfWeek.FRIDAY;
+            case 6: return DataValues.DayOfWeek.SATURDAY;
+            default:  return DataValues.DayOfWeek.SUNDAY;
+        }
     }
 }

@@ -1,8 +1,8 @@
 package org.kelvin.webapp.schedule;
 
+import org.kelvin.webapp.director.DataValues;
 import org.kelvin.webapp.tools.CommonUtils;
 import org.kelvin.webapp.tools.DataGenerator;
-
 import java.util.*;
 
 public class TestScheduleDatabase implements ScheduleDatabase {
@@ -20,13 +20,13 @@ public class TestScheduleDatabase implements ScheduleDatabase {
         dailyAllotmentMap.put(LifeTask.Type.TASKS, 2.0);
         dailyAllotmentMap.put(LifeTask.Type.UNKNOWN, 0.0);
 
-        weeklyAllotmentMap.put(LifeTask.Type.SLEEP, 8.0);
-        weeklyAllotmentMap.put(LifeTask.Type.WORK, 8.5);
-        weeklyAllotmentMap.put(LifeTask.Type.REST, 1.5);
-        weeklyAllotmentMap.put(LifeTask.Type.SPIRIT, 1.0);
-        weeklyAllotmentMap.put(LifeTask.Type.LIFE_GOAL, 1.5);
-        weeklyAllotmentMap.put(LifeTask.Type.RELATIONSHIP, 1.5);
-        weeklyAllotmentMap.put(LifeTask.Type.TASKS, 2.0);
+        weeklyAllotmentMap.put(LifeTask.Type.SLEEP, 56.0);
+        weeklyAllotmentMap.put(LifeTask.Type.WORK, 42.5);
+        weeklyAllotmentMap.put(LifeTask.Type.REST, 9.0);
+        weeklyAllotmentMap.put(LifeTask.Type.SPIRIT, 7.0);
+        weeklyAllotmentMap.put(LifeTask.Type.LIFE_GOAL, 6.0);
+        weeklyAllotmentMap.put(LifeTask.Type.RELATIONSHIP, 7.5);
+        weeklyAllotmentMap.put(LifeTask.Type.TASKS, 14.0);
         weeklyAllotmentMap.put(LifeTask.Type.UNKNOWN, 0.0);
     }
 
@@ -96,13 +96,40 @@ public class TestScheduleDatabase implements ScheduleDatabase {
         return weeklyAllotmentMap.get(type);
     }
 
+    @Override
+    public Double getRemainingTimeForDay(Date date) {
+        return DataValues.MAX_DAY_TOTAL - CommonUtils.getTotalTimeForLifeTasks(getDayQuotaForDate(date).getLifeTasks());
+    }
+
+    @Override
+    public Double getRemainingTimeForDayByLifeTaskType(Date date, LifeTask.Type type) {
+        return dailyAllotmentMap.get(type) - CommonUtils.getTotalTimeForLifeTasks_FilterByType(getDayQuotaForDate(date).getLifeTasks(), type);
+    }
+
+    @Override
+    public Double getRemainingTimeForWeek(Week week) {
+        List<LifeTask> lifeTasksForWeek = new ArrayList<>();
+        for(DayQuota item : getDayQuotasForWeek(week)){
+            lifeTasksForWeek.addAll(item.getLifeTasks());
+        }
+        return DataValues.MAX_WEEK_TOTAL - CommonUtils.getTotalTimeForLifeTasks(lifeTasksForWeek);
+    }
+
+    @Override
+    public Double getRemainingTimeForWeekByLifeTaskType(Week week, LifeTask.Type type) {
+        List<LifeTask> lifeTasksForWeek = new ArrayList<>();
+        for(DayQuota item : getDayQuotasForWeek(week)){
+            lifeTasksForWeek.addAll(item.getLifeTasks());
+        }
+        return DataValues.MAX_WEEK_TOTAL - CommonUtils.getTotalTimeForLifeTasks_FilterByType(lifeTasksForWeek, type);
+    }
+
     //=========== Fake Data Setup
 
-    public void initDatabase(List<LifeTask> initTasks){
-        DayQuota quota = new DayQuota(initTasks);
+    public void initDatabase(Map<DataValues.DayOfWeek, List<LifeTask>> weeklTasks){
         for (Week week : weeks) {
             for (Date day : week.getDays()) {
-                dayQuotaMap.put(day, quota);
+                dayQuotaMap.put(day, new DayQuota(weeklTasks.get(CommonUtils.getDayOfWeekForDate(day))));
             }
         }
     }

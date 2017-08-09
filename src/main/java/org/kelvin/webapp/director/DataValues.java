@@ -3,7 +3,8 @@ package org.kelvin.webapp.director;
 
 public class DataValues {
 
-    public static double MAX_DAY_TOTAL = 24.0;
+    public static final double MAX_DAY_TOTAL = 24.0;
+    public static final double MAX_WEEK_TOTAL = 168.0;
 
     public enum Priority {
         LOW(1, "Trival"),
@@ -33,5 +34,15 @@ public class DataValues {
             this.weight = weight;
             this.name = name;
         }
+    }
+
+    public enum DayOfWeek {
+        MONDAY,
+        TUESDAY,
+        WEDNESDAY,
+        THRUSDAY,
+        FRIDAY,
+        SATURDAY,
+        SUNDAY
     }
 }
