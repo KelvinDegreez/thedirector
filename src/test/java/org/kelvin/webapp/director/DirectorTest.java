@@ -1,6 +1,5 @@
 package org.kelvin.webapp.director;
 
-import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 import org.kelvin.webapp.schedule.DayQuota;
@@ -136,16 +135,16 @@ public class DirectorTest {
     private Map<DataValues.DayOfWeek, List<LifeTask>> createDefaultTestLifeTasks(){
         Map<DataValues.DayOfWeek, List<LifeTask>> map = new HashMap<>();
         List<LifeTask> workDayTasks = new ArrayList<>();
-        workDayTasks.add(new LifeTask("Daily Sleep", LifeTask.Type.SLEEP, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.DAYS));
-        workDayTasks.add(new LifeTask("Daily Work", LifeTask.Type.WORK, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.HOURS));
-        workDayTasks.add(new LifeTask("Daily Rest", LifeTask.Type.REST, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.DAYS));
-        workDayTasks.add(new LifeTask("Quiet Time", LifeTask.Type.SPIRIT, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.DAYS));
+        workDayTasks.add(new LifeTask("Daily Sleep", LifeTask.Type.SLEEP, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+        workDayTasks.add(new LifeTask("Daily Work", LifeTask.Type.WORK, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.EXTREME));
+        workDayTasks.add(new LifeTask("Daily Rest", LifeTask.Type.REST, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+        workDayTasks.add(new LifeTask("Quiet Time", LifeTask.Type.SPIRIT, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
 
         List<LifeTask> weekEndTasks = new ArrayList<>();
-        weekEndTasks.add(new LifeTask("Daily Sleep", LifeTask.Type.SLEEP, 7.0, DataValues.Priority.NORMAL, DataValues.Urgency.DAYS));
-        weekEndTasks.add(new LifeTask("Weekend Relationship", LifeTask.Type.RELATIONSHIP, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.HOURS));
-        weekEndTasks.add(new LifeTask("Weekend Rest", LifeTask.Type.REST, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.DAYS));
-        weekEndTasks.add(new LifeTask("Quiet Time", LifeTask.Type.SPIRIT, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.DAYS));
+        weekEndTasks.add(new LifeTask("Daily Sleep", LifeTask.Type.SLEEP, 7.0, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+        weekEndTasks.add(new LifeTask("Weekend Relationship", LifeTask.Type.RELATIONSHIP, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.EXTREME));
+        weekEndTasks.add(new LifeTask("Weekend Rest", LifeTask.Type.REST, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+        weekEndTasks.add(new LifeTask("Quiet Time", LifeTask.Type.SPIRIT, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
 
         for(DataValues.DayOfWeek day : DataValues.DayOfWeek.values()) {
             switch (day) {

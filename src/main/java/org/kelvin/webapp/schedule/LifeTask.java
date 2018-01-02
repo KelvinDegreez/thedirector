@@ -8,7 +8,7 @@ public class LifeTask {
     private Type type = Type.UNKNOWN;
     private Double timeCommitment = 0.0;
     private DataValues.Priority priority = DataValues.Priority.LOW;
-    private DataValues.Urgency urgency = DataValues.Urgency.YEARS;
+    private DataValues.Urgency urgency = DataValues.Urgency.MINIMAL;
 
     public enum Type{
         SLEEP,

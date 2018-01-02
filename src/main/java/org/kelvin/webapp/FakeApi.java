@@ -3,7 +3,6 @@ package org.kelvin.webapp;
 
 
 import com.google.gson.*;
-import org.apache.commons.io.IOUtils;
 import org.kelvin.webapp.apiObjects.*;
 import org.kelvin.webapp.schedule.LifeTask;
 import org.kelvin.webapp.tools.CommonUtils;
@@ -12,12 +11,8 @@ import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
-@Path("/api")
+@Path("/test")
 @Singleton
 public class FakeApi {
 
@@ -44,9 +39,22 @@ public class FakeApi {
 
     @GET
     @Path("{param}")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response getMessage(@PathParam("param") String message) {
         return Response.status(200).entity("You have successfully sent this message: \n\n \"" + message + "\"").build();
     }
+
+//    @GET
+//    @Path("events/")
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public Response getEvents() {
+//        StringBuilder message = new StringBuilder();
+//        for(LifeTask task : GoogleCalendarApi.getGoogleCalendarLifeTasks()){
+//            message.append(task.toString());
+//            message.append("\n");
+//        }
+//        return Response.status(200).entity("Life Tasks: \n\n \"" + message + "\"").build();
+//    }
 
     @POST
     @Path("token/")
@@ -93,25 +101,24 @@ public class FakeApi {
     }
 
 
-
-    @POST
-    @Path("post-with-file-example/")
-    @Produces(MediaType.MULTIPART_FORM_DATA)
-    public Response postWithFileExample(@PathParam("id") String id,
-                                        @FormParam("file") InputStream in) {
-        File tempFile = null;
-        try {
-            tempFile = File.createTempFile("testFile", "test");
-            tempFile.deleteOnExit();
-            FileOutputStream out = new FileOutputStream(tempFile);
-            IOUtils.copy(in, out);
-        } catch (IOException e) {
-            if (tempFile != null) {
-                tempFile.delete();
-            }
-        }
-        return Response.status(ApiServer.HttpCode.SUCCESS.code).entity("test").build();
-    }
+//    @POST
+//    @Path("post-with-file-example/")
+//    @Produces(MediaType.MULTIPART_FORM_DATA)
+//    public Response postWithFileExample(@PathParam("id") String id,
+//                                        @FormParam("file") InputStream in) {
+//        File tempFile = null;
+//        try {
+//            tempFile = File.createTempFile("testFile", "test");
+//            tempFile.deleteOnExit();
+//            FileOutputStream out = new FileOutputStream(tempFile);
+//            IOUtils.copy(in, out);
+//        } catch (IOException e) {
+//            if (tempFile != null) {
+//                tempFile.delete();
+//            }
+//        }
+//        return Response.status(ApiServer.HttpCode.SUCCESS.code).entity("test").build();
+//    }
 
     @DELETE
     @Path("delete-example/")

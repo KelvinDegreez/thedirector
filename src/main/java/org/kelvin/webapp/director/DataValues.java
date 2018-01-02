@@ -22,11 +22,11 @@ public class DataValues {
     }
 
     public enum Urgency {
-        YEARS(1, "Minimal"),
-        MONTHS(2, "Low"),
-        WEEKS(3, "Normal"),
-        DAYS(4, "High"),
-        HOURS(5, "Extreme"),
+        MINIMAL(1, "Minimal"),
+        LOW(2, "Low"),
+        NORMAL(3, "Normal"),
+        HIGH(4, "High"),
+        EXTREME(5, "Extreme"),
         UNKNOWN(0, "Unknown");
         int weight;
         public String name;
