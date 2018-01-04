@@ -151,7 +151,7 @@ public class DirectorTest {
                 case MONDAY:
                 case TUESDAY:
                 case WEDNESDAY:
-                case THRUSDAY:
+                case THURSDAY:
                 case FRIDAY:
                     map.put(day, workDayTasks);
                     break;

@@ -75,6 +75,6 @@ public class LifeTask {
 
     @Override
     public String toString() {
-        return name+" - "+type.toString()+" - "+timeCommitment;
+        return "["+timeCommitment+"]["+type.toString()+"]["+priority+"]["+urgency+"]["+name+"]";
     }
 }

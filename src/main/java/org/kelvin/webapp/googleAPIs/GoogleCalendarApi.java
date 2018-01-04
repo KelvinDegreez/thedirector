@@ -16,14 +16,14 @@ import com.google.api.client.util.DateTime;
 
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
+import org.kelvin.webapp.director.DataValues;
 import org.kelvin.webapp.schedule.LifeTask;
+import org.kelvin.webapp.tools.CommonUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class GoogleCalendarApi {
     /** Application name. */
@@ -102,46 +102,17 @@ public class GoogleCalendarApi {
                 .build();
     }
 
-    public static void main(String[] args) throws IOException {
-        // Build a new authorized API client service.
-        // Note: Do not confuse this class with the
-        //   com.google.api.services.calendar.model.Calendar class.
-        com.google.api.services.calendar.Calendar service =
-                getCalendarService();
-
-        // List the next 10 events from the primary calendar.
-        DateTime now = new DateTime(System.currentTimeMillis());
-        Events events = service.events().list("primary")
-                .setMaxResults(10)
-                .setTimeMin(now)
-                .setOrderBy("startTime")
-                .setSingleEvents(true)
-                .execute();
-        StringBuilder message = new StringBuilder();
-        for(LifeTask task : GoogleCalendarApi.getGoogleCalendarLifeTasks()){
-            message.append(task.toString());
-            message.append("\n");
-        }
-        System.out.println(message.toString());
-    }
-
-    public static List<LifeTask> getGoogleCalendarLifeTasks(){
+    public static Map<DataValues.DayOfWeek, List<LifeTask>> getGoogleCalendarLifeTasks(){
         try {
-            com.google.api.services.calendar.Calendar service =
-                    getCalendarService();
-
-            // List the next 10 events from the primary calendar.
-            DateTime now = new DateTime(System.currentTimeMillis());
-            Events events = service.events().list("primary")
-                    .setMaxResults(10)
-                    .setTimeMin(now)
+            Events events = getCalendarService().events().list("primary")
+                    .setTimeMin(new DateTime(CommonUtils.getWeekStartDay()))
+                    .setTimeMax(new DateTime(CommonUtils.getLastTimeInDate(CommonUtils.getWeekEndDay())))
                     .setOrderBy("startTime")
                     .setSingleEvents(true)
                     .execute();
-
             return GoogleApiConverter.convertEventsToLifeTasks(events);
         }catch (IOException e){
-            return new ArrayList<>();
+            return new HashMap<>();
         }
     }
 

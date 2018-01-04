@@ -25,6 +25,18 @@ public class CommonUtils {
         return removeTimeFromDate(Calendar.getInstance().getTime());
     }
 
+    public static Date getWeekStartDay(){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        return removeTimeFromDate(c.getTime());
+    }
+
+    public static Date getWeekEndDay(){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        return removeTimeFromDate(c.getTime());
+    }
+
     public static boolean onSameDate(Date date1, Date date2) {
         return removeTimeFromDate(date1).equals(removeTimeFromDate(date2));
     }
@@ -324,7 +336,7 @@ public class CommonUtils {
             case 1: return DataValues.DayOfWeek.MONDAY;
             case 2: return DataValues.DayOfWeek.TUESDAY;
             case 3: return DataValues.DayOfWeek.WEDNESDAY;
-            case 4: return DataValues.DayOfWeek.THRUSDAY;
+            case 4: return DataValues.DayOfWeek.THURSDAY;
             case 5: return DataValues.DayOfWeek.FRIDAY;
             case 6: return DataValues.DayOfWeek.SATURDAY;
             default:  return DataValues.DayOfWeek.SUNDAY;

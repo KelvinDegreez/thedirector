@@ -126,10 +126,10 @@ public class TestScheduleDatabase implements ScheduleDatabase {
 
     //=========== Fake Data Setup
 
-    public void initDatabase(Map<DataValues.DayOfWeek, List<LifeTask>> weeklTasks){
+    public void initDatabase(Map<DataValues.DayOfWeek, List<LifeTask>> weeklyTasks){
         for (Week week : weeks) {
             for (Date day : week.getDays()) {
-                dayQuotaMap.put(day, new DayQuota(weeklTasks.get(CommonUtils.getDayOfWeekForDate(day))));
+                dayQuotaMap.put(day, new DayQuota(weeklyTasks.get(CommonUtils.getDayOfWeekForDate(day))));
             }
         }
     }

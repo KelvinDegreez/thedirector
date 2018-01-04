@@ -1,6 +1,8 @@
 package org.kelvin.webapp.director;
 
 
+import java.util.Calendar;
+
 public class DataValues {
 
     public static final double MAX_DAY_TOTAL = 24.0;
@@ -22,11 +24,11 @@ public class DataValues {
     }
 
     public enum Urgency {
-        MINIMAL(1, "Minimal"),
-        LOW(2, "Low"),
-        NORMAL(3, "Normal"),
-        HIGH(4, "High"),
-        EXTREME(5, "Extreme"),
+        MINIMAL(1, "Minimal"), // Years before consequences
+        LOW(2, "Low"),         // Months before ..
+        NORMAL(3, "Normal"),   // Weeks before ..
+        HIGH(4, "High"),       // Days before ..
+        EXTREME(5, "Extreme"), // Hours before ..
         UNKNOWN(0, "Unknown");
         int weight;
         public String name;
@@ -40,9 +42,22 @@ public class DataValues {
         MONDAY,
         TUESDAY,
         WEDNESDAY,
-        THRUSDAY,
+        THURSDAY,
         FRIDAY,
         SATURDAY,
-        SUNDAY
+        SUNDAY;
+        public static DayOfWeek fromCalendarDay(int calendarDay){
+            switch (calendarDay){
+                case Calendar.MONDAY: return MONDAY;
+                case Calendar.TUESDAY: return TUESDAY;
+                case Calendar.WEDNESDAY: return WEDNESDAY;
+                case Calendar.THURSDAY: return THURSDAY;
+                case Calendar.FRIDAY: return FRIDAY;
+                case Calendar.SATURDAY: return SATURDAY;
+                case Calendar.SUNDAY: return SUNDAY;
+                default:
+                    return MONDAY;
+            }
+        }
     }
 }
