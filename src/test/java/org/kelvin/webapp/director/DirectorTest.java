@@ -1,5 +1,6 @@
 package org.kelvin.webapp.director;
 
+import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 import org.kelvin.webapp.schedule.DayQuota;
@@ -16,24 +17,35 @@ public class DirectorTest {
 
     private Director director;
     private TestScheduleDatabase db;
-    private Map<DataValues.DayOfWeek, List<LifeTask>> defaultLifeWeeklyTasksMap = createDefaultTestLifeTasks();
+    private Map<DataValues.DayOfWeek, List<LifeTask>> defaultLifeWeeklyTasksMap = TestScheduleDatabase.createDefaultTestLifeTasks();
     private Map<LifeTask.Type, List<LifeTask>> testLifeTasksMap = createTestLifeTasksMap();
 
-    @Before
+   @Before
     public void setUp() throws Exception {
         db = new TestScheduleDatabase();
-        db.initDatabase(createDefaultTestLifeTasks());
+        db.intWithDefaultData();
         director = new TestDirector();
         director.setScheduleDatabase(db);
     }
 
-
     @Test
-    public void setScheduleDatabase() throws Exception {
+    public void testSandbox() throws Exception {
 
     }
 
-    @Test
+   @Test
+    public void setScheduleDatabase() throws Exception {
+       for(List<LifeTask> testLifeTasks : testLifeTasksMap.values()) {
+           for (LifeTask task : testLifeTasks) {
+                String json = new Gson().toJson(task);
+                int pause=0;
+                pause++;
+                break;
+           }
+       }
+   }
+
+   @Test
     public void canDoToday() throws Exception {
         Date today = db.getCurrentDay();
         DataValues.DayOfWeek dayOfWeek = CommonUtils.getDayOfWeekForDate(today);
@@ -56,9 +68,14 @@ public class DirectorTest {
                         "Remaining Day Time for "+task.getType()+": "+db.getRemainingTimeForDayByLifeTaskType(today, task.getType())+"\n"+
                         "Task Time: "+task.getTimeCommitment()+"\n"+
                         "Able to Do: "+valAbleToDo+"\n"+
-                        "Should Do: "+valShouldDoWeek+"\n"+
+                        "Should Do: "+valShouldDoDay+"\n"+
                         "Task"+task+"\n"+
                         "---------------\n");
+
+                if(valShouldDoDay){
+                    assertTrue("valAbleToDo can't be false if valShouldDoToday is true", valAbleToDo);
+                }
+
                 assertEquals(
                         task + "\nval_AbleDay?: " +valAbleToDo+ "\nval_ShouldDay?: "+valShouldDoDay,
                         valAbleToDo && valShouldDoDay && valShouldDoWeek, director.canDoToday(task));
@@ -66,7 +83,7 @@ public class DirectorTest {
         }
     }
 
-    @Test
+   @Test
     public void canDoThisWeek() throws Exception {
         Week week = db.getCurrentWeek();
         for (List<LifeTask> testLifeTasks : testLifeTasksMap.values()) {
@@ -100,15 +117,15 @@ public class DirectorTest {
         }
     }
 
-    @Test
+   @Test
     public void canDoNextWeek() throws Exception {
     }
 
-    @Test
+   @Test
     public void canDoThisMonth() throws Exception {
     }
 
-    @Test
+   @Test
     public void canDoNextMonth() throws Exception {
     }
 
@@ -132,35 +149,4 @@ public class DirectorTest {
         return map;
     }
 
-    private Map<DataValues.DayOfWeek, List<LifeTask>> createDefaultTestLifeTasks(){
-        Map<DataValues.DayOfWeek, List<LifeTask>> map = new HashMap<>();
-        List<LifeTask> workDayTasks = new ArrayList<>();
-        workDayTasks.add(new LifeTask("Daily Sleep", LifeTask.Type.SLEEP, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
-        workDayTasks.add(new LifeTask("Daily Work", LifeTask.Type.WORK, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.EXTREME));
-        workDayTasks.add(new LifeTask("Daily Rest", LifeTask.Type.REST, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
-        workDayTasks.add(new LifeTask("Quiet Time", LifeTask.Type.SPIRIT, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
-
-        List<LifeTask> weekEndTasks = new ArrayList<>();
-        weekEndTasks.add(new LifeTask("Daily Sleep", LifeTask.Type.SLEEP, 7.0, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
-        weekEndTasks.add(new LifeTask("Weekend Relationship", LifeTask.Type.RELATIONSHIP, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.EXTREME));
-        weekEndTasks.add(new LifeTask("Weekend Rest", LifeTask.Type.REST, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
-        weekEndTasks.add(new LifeTask("Quiet Time", LifeTask.Type.SPIRIT, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
-
-        for(DataValues.DayOfWeek day : DataValues.DayOfWeek.values()) {
-            switch (day) {
-                case MONDAY:
-                case TUESDAY:
-                case WEDNESDAY:
-                case THURSDAY:
-                case FRIDAY:
-                    map.put(day, workDayTasks);
-                    break;
-                case SATURDAY:
-                case SUNDAY:
-                    map.put(day, weekEndTasks);
-                    break;
-            }
-        }
-        return map;
-    }
 }

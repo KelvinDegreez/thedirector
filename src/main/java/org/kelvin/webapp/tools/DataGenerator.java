@@ -1,7 +1,6 @@
 package org.kelvin.webapp.tools;
 
 
-import org.kelvin.webapp.schedule.LifeTask;
 import org.kelvin.webapp.schedule.Week;
 
 import java.util.ArrayList;

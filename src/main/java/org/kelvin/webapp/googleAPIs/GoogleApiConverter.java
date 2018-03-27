@@ -54,16 +54,18 @@ public class GoogleApiConverter {
                 }
             }
 
-            cal.setTimeInMillis(event.getStart().getDateTime().getValue());
-            DataValues.DayOfWeek day = DataValues.DayOfWeek.fromCalendarDay(cal.get(Calendar.DAY_OF_WEEK));
+            if(event.getStart() != null && event.getStart().getDateTime() != null) {
+                cal.setTimeInMillis(event.getStart().getDateTime().getValue());
+                DataValues.DayOfWeek day = DataValues.DayOfWeek.fromCalendarDay(cal.get(Calendar.DAY_OF_WEEK));
 
-            weeklyTasks.get(day).add(
-                    new LifeTask(
-                        event.getSummary(),
-                        type,
-                        getEventTimeCommitment(event),
-                        priority,
-                        urgency));
+                weeklyTasks.get(day).add(
+                        new LifeTask(
+                                event.getSummary(),
+                                type,
+                                getEventTimeCommitment(event),
+                                priority,
+                                urgency));
+            }
         }
         return weeklyTasks;
     }

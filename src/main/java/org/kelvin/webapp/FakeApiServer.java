@@ -2,6 +2,12 @@ package org.kelvin.webapp;
 
 
 import org.kelvin.webapp.apiObjects.*;
+import org.kelvin.webapp.director.Director;
+import org.kelvin.webapp.director.TestDirector;
+import org.kelvin.webapp.googleAPIs.GoogleCalendarApi;
+import org.kelvin.webapp.schedule.LifeTask;
+import org.kelvin.webapp.schedule.TestScheduleDatabase;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -11,9 +17,15 @@ public class FakeApiServer implements ApiServer {
 
     private Random ran = new Random();
     private Map<String, OAuthToken> apiRefreshTokenStringUserTokenMap = new HashMap<>();
+    private Director director;
+    private TestScheduleDatabase db;
 
     public FakeApiServer(){
-
+        db = new TestScheduleDatabase();
+        //TODO: Default init should automatically be done to setup db
+        db.intWithDefaultData();
+        director = new TestDirector();
+        director.setScheduleDatabase(db);
     }
 
     //============= User API =================
@@ -60,6 +72,12 @@ public class FakeApiServer implements ApiServer {
         }
     }
 
+    @Override
+    public DataResult<String> getAnswer_CanIDoToday(LifeTask task){
+            boolean answer = director.canDoToday(task);
+            String message = "Director: \"You can"+(answer ? "" : "\'t")+" do \""+task.getName()+"\" today.\"";
+            return new DataResult<>(HttpCode.SUCCESS, "Success", message);
+    }
 
     private DataResult generateFakeError(DataResult dataResult){
         String errorMessage;

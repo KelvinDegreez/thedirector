@@ -30,7 +30,7 @@ public class TestScheduleDatabase implements ScheduleDatabase {
         weeklyAllotmentMap.put(LifeTask.Type.UNKNOWN, 0.0);
     }
 
-    public List<Week> weeks = DataGenerator.createWeeksForYear(2017);
+    public List<Week> weeks = DataGenerator.createWeeksForYear(2018);
 
     private Map<Date, DayQuota> dayQuotaMap = new HashMap<>();
 
@@ -126,12 +126,54 @@ public class TestScheduleDatabase implements ScheduleDatabase {
 
     //=========== Fake Data Setup
 
+    public void intWithDefaultData(){
+        initDatabase(createDefaultTestLifeTasks());
+    }
+
     public void initDatabase(Map<DataValues.DayOfWeek, List<LifeTask>> weeklyTasks){
         for (Week week : weeks) {
             for (Date day : week.getDays()) {
                 dayQuotaMap.put(day, new DayQuota(weeklyTasks.get(CommonUtils.getDayOfWeekForDate(day))));
             }
         }
+    }
+
+    public void initWeek(Week week, Map<DataValues.DayOfWeek, List<LifeTask>> weeklyTasks){
+        for(Date day : week.getDays()){
+            dayQuotaMap.put(day, new DayQuota(weeklyTasks.get(CommonUtils.getDayOfWeekForDate(day))));
+        }
+    }
+
+    public static Map<DataValues.DayOfWeek, List<LifeTask>> createDefaultTestLifeTasks(){
+        Map<DataValues.DayOfWeek, List<LifeTask>> map = new HashMap<>();
+        List<LifeTask> workDayTasks = new ArrayList<>();
+        workDayTasks.add(new LifeTask("Daily Sleep", LifeTask.Type.SLEEP, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+        workDayTasks.add(new LifeTask("Daily Work", LifeTask.Type.WORK, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.EXTREME));
+        workDayTasks.add(new LifeTask("Daily Rest", LifeTask.Type.REST, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+        workDayTasks.add(new LifeTask("Quiet Time", LifeTask.Type.SPIRIT, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+
+        List<LifeTask> weekEndTasks = new ArrayList<>();
+        weekEndTasks.add(new LifeTask("Daily Sleep", LifeTask.Type.SLEEP, 7.0, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+        weekEndTasks.add(new LifeTask("Weekend Relationship", LifeTask.Type.RELATIONSHIP, 6.0, DataValues.Priority.NORMAL, DataValues.Urgency.EXTREME));
+        weekEndTasks.add(new LifeTask("Weekend Rest", LifeTask.Type.REST, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+        weekEndTasks.add(new LifeTask("Quiet Time", LifeTask.Type.SPIRIT, 0.5, DataValues.Priority.NORMAL, DataValues.Urgency.HIGH));
+
+        for(DataValues.DayOfWeek day : DataValues.DayOfWeek.values()) {
+            switch (day) {
+                case MONDAY:
+                case TUESDAY:
+                case WEDNESDAY:
+                case THURSDAY:
+                case FRIDAY:
+                    map.put(day, workDayTasks);
+                    break;
+                case SATURDAY:
+                case SUNDAY:
+                    map.put(day, weekEndTasks);
+                    break;
+            }
+        }
+        return map;
     }
 
 }

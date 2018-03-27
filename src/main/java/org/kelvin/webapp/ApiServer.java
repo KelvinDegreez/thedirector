@@ -2,6 +2,7 @@ package org.kelvin.webapp;
 
 
 import org.kelvin.webapp.apiObjects.*;
+import org.kelvin.webapp.schedule.LifeTask;
 
 public interface ApiServer {
 
@@ -9,6 +10,8 @@ public interface ApiServer {
     DataResult<OAuthToken> getUserToken(String username, String password);
 
     DataResult<OAuthToken> getRefreshToken(String refreshToken, String grantType);
+
+    DataResult<String> getAnswer_CanIDoToday(LifeTask task);
 
     public enum HttpCode {
         SUCCESS(200),
