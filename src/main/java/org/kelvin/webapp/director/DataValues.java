@@ -38,26 +38,4 @@ public class DataValues {
         }
     }
 
-    public enum DayOfWeek {
-        MONDAY,
-        TUESDAY,
-        WEDNESDAY,
-        THURSDAY,
-        FRIDAY,
-        SATURDAY,
-        SUNDAY;
-        public static DayOfWeek fromCalendarDay(int calendarDay){
-            switch (calendarDay){
-                case Calendar.MONDAY: return MONDAY;
-                case Calendar.TUESDAY: return TUESDAY;
-                case Calendar.WEDNESDAY: return WEDNESDAY;
-                case Calendar.THURSDAY: return THURSDAY;
-                case Calendar.FRIDAY: return FRIDAY;
-                case Calendar.SATURDAY: return SATURDAY;
-                case Calendar.SUNDAY: return SUNDAY;
-                default:
-                    return MONDAY;
-            }
-        }
-    }
 }

@@ -8,6 +8,10 @@ import org.kelvin.webapp.schedule.LifeTask;
 import org.kelvin.webapp.schedule.TestScheduleDatabase;
 import org.kelvin.webapp.schedule.Week;
 import org.kelvin.webapp.tools.CommonUtils;
+import org.kelvin.webapp.tools.DataGenerator;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -17,13 +21,21 @@ public class DirectorTest {
 
     private Director director;
     private TestScheduleDatabase db;
-    private Map<DataValues.DayOfWeek, List<LifeTask>> defaultLifeWeeklyTasksMap = TestScheduleDatabase.createDefaultTestLifeTasks();
+    private Map<DayOfWeek, List<LifeTask>> defaultLifeWeeklyTasksMap = createDefaultTestLifeTasks();
     private Map<LifeTask.Type, List<LifeTask>> testLifeTasksMap = createTestLifeTasksMap();
+
+
+    public static Map<DayOfWeek, List<LifeTask>> createDefaultTestLifeTasks() {
+        Map<DayOfWeek, List<LifeTask>> map = new HashMap<>();
+        for(DayOfWeek dayOfWeek : DayOfWeek.values()){
+            map.put(dayOfWeek, DataGenerator.generateFakeDayQuota(dayOfWeek).getLifeTasks());
+        }
+        return map;
+    }
 
    @Before
     public void setUp() throws Exception {
-        db = new TestScheduleDatabase();
-        db.intWithDefaultData();
+        db = TestScheduleDatabase.createWithFakeData();
         director = new TestDirector();
         director.setScheduleDatabase(db);
     }
@@ -47,21 +59,21 @@ public class DirectorTest {
 
    @Test
     public void canDoToday() throws Exception {
-        Date today = db.getCurrentDay();
-        DataValues.DayOfWeek dayOfWeek = CommonUtils.getDayOfWeekForDate(today);
+        LocalDate today = LocalDate.now();
+        DayOfWeek dayOfWeek = today.getDayOfWeek();
         for(List<LifeTask> testLifeTasks : testLifeTasksMap.values()) {
             for (LifeTask task : testLifeTasks) {
                 double sumDay = (task.getTimeCommitment() + CommonUtils.getTotalTimeForLifeTasks(db.getDayQuotaForDate(today).getLifeTasks()));
                 boolean valAbleToDo = sumDay < DataValues.MAX_DAY_TOTAL;
 
                 double sumTotalDay = CommonUtils.getTotalTimeForLifeTasks_FilterByType(defaultLifeWeeklyTasksMap.get(dayOfWeek), task.getType()) + task.getTimeCommitment();
-                boolean valShouldDoDay = sumTotalDay <= db.getMaxAllotmentForDayByType(task.getType());
+                boolean valShouldDoDay = sumTotalDay <= db.getMaxDailyAllotmentByForType(task.getType());
 
                 double sumTotalWeek = task.getTimeCommitment();
-                for(DataValues.DayOfWeek item : DataValues.DayOfWeek.values()){
+                for(DayOfWeek item : DayOfWeek.values()){
                     sumTotalWeek += CommonUtils.getTotalTimeForLifeTasks_FilterByType(defaultLifeWeeklyTasksMap.get(item), task.getType());
                 }
-                boolean valShouldDoWeek = sumTotalWeek <= db.getMaxAllotmentForWeekByType(task.getType());
+                boolean valShouldDoWeek = sumTotalWeek <= db.getMaxWeeklyAllotmentForType(task.getType());
                 System.out.println(
                         "---------------\n"+
                         "Remaining Day Time: "+db.getRemainingTimeForDay(today)+"\n"+
@@ -85,11 +97,11 @@ public class DirectorTest {
 
    @Test
     public void canDoThisWeek() throws Exception {
-        Week week = db.getCurrentWeek();
+        Week week = new Week(LocalDate.now());
         for (List<LifeTask> testLifeTasks : testLifeTasksMap.values()) {
             for (LifeTask task : testLifeTasks) {
                 List<LifeTask> weeklyLifeTasks = new ArrayList<>();
-                for(DayQuota quota : db.getDayQuotasForWeek(week)){
+                for(DayQuota quota : db.getDayQuotasForDateRange(week.getStartDate(), week.getEndDate())){
                     weeklyLifeTasks.addAll(quota.getLifeTasks());
                 }
                 double weekTimeRemaining = CommonUtils.getTotalTimeForLifeTasks(weeklyLifeTasks);
@@ -97,10 +109,10 @@ public class DirectorTest {
                 boolean valAbleToDo = sumWeek < DataValues.MAX_WEEK_TOTAL;
 
                 double sumTotalWeek = task.getTimeCommitment();
-                for (DataValues.DayOfWeek item : DataValues.DayOfWeek.values()) {
+                for (DayOfWeek item : DayOfWeek.values()) {
                     sumTotalWeek += CommonUtils.getTotalTimeForLifeTasks_FilterByType(defaultLifeWeeklyTasksMap.get(item), task.getType());
                 }
-                boolean valShouldDoWeek = sumTotalWeek <= db.getMaxAllotmentForWeekByType(task.getType());
+                boolean valShouldDoWeek = sumTotalWeek <= db.getMaxWeeklyAllotmentForType(task.getType());
                 System.out.println(
                         "---------------\n"+
                         "Remaining Week Time: "+db.getRemainingTimeForWeek(week)+"\n"+

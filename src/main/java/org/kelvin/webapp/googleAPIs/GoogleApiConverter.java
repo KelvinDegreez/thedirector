@@ -1,5 +1,6 @@
 package org.kelvin.webapp.googleAPIs;
 
+import java.time.DayOfWeek;
 import java.util.*;
 
 import org.kelvin.webapp.director.DataValues;
@@ -17,10 +18,10 @@ public class GoogleApiConverter {
     private static String priorityHeader = "director-priority";
     private static String urgencyHeader = "director-urgency";
 
-    public static Map<DataValues.DayOfWeek, List<LifeTask>> convertEventsToLifeTasks(Events events){
+    public static Map<DayOfWeek, List<LifeTask>> convertEventsToLifeTasks(Events events){
         //TODO: only converts events of current week. need to convert events from any date range
-        Map<DataValues.DayOfWeek, List<LifeTask>> weeklyTasks = new HashMap<>();
-        for(DataValues.DayOfWeek day : DataValues.DayOfWeek.values()){
+        Map<DayOfWeek, List<LifeTask>> weeklyTasks = new HashMap<>();
+        for(DayOfWeek day : DayOfWeek.values()){
             weeklyTasks.put(day, new ArrayList<LifeTask>());
         }
 
@@ -56,7 +57,7 @@ public class GoogleApiConverter {
 
             if(event.getStart() != null && event.getStart().getDateTime() != null) {
                 cal.setTimeInMillis(event.getStart().getDateTime().getValue());
-                DataValues.DayOfWeek day = DataValues.DayOfWeek.fromCalendarDay(cal.get(Calendar.DAY_OF_WEEK));
+                DayOfWeek day = DayOfWeek.of(cal.get(Calendar.DAY_OF_WEEK));
 
                 weeklyTasks.get(day).add(
                         new LifeTask(

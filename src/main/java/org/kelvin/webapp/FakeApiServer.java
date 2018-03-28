@@ -21,9 +21,8 @@ public class FakeApiServer implements ApiServer {
     private TestScheduleDatabase db;
 
     public FakeApiServer(){
-        db = new TestScheduleDatabase();
+        db = TestScheduleDatabase.createWithFakeData();
         //TODO: Default init should automatically be done to setup db
-        db.intWithDefaultData();
         director = new TestDirector();
         director.setScheduleDatabase(db);
     }

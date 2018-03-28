@@ -1,14 +1,11 @@
 package org.kelvin.webapp.tools;
-
-
-
-import org.kelvin.webapp.director.DataValues;
 import org.kelvin.webapp.schedule.LifeTask;
 import org.kelvin.webapp.schedule.Week;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,8 +39,7 @@ public class CommonUtils {
     }
 
     public static Week getThisWeek() {
-        //TODO: Fix This
-        return new Week(getToday(), getToday(), new ArrayList<Date>());
+        return new Week(LocalDate.now());
     }
 
     public static List<Date> getDateListForRange(Date startDate, Date endDate) {
@@ -330,16 +326,4 @@ public class CommonUtils {
         return sumAllotment;
     }
 
-    public static DataValues.DayOfWeek getDayOfWeekForDate(Date date){
-        switch (date.getDay()){
-            case 0: return DataValues.DayOfWeek.SUNDAY;
-            case 1: return DataValues.DayOfWeek.MONDAY;
-            case 2: return DataValues.DayOfWeek.TUESDAY;
-            case 3: return DataValues.DayOfWeek.WEDNESDAY;
-            case 4: return DataValues.DayOfWeek.THURSDAY;
-            case 5: return DataValues.DayOfWeek.FRIDAY;
-            case 6: return DataValues.DayOfWeek.SATURDAY;
-            default:  return DataValues.DayOfWeek.SUNDAY;
-        }
-    }
 }

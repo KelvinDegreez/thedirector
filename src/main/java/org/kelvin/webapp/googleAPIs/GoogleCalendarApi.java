@@ -23,6 +23,7 @@ import org.kelvin.webapp.tools.CommonUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.DayOfWeek;
 import java.util.*;
 
 public class GoogleCalendarApi {
@@ -102,7 +103,7 @@ public class GoogleCalendarApi {
                 .build();
     }
 
-    public static Map<DataValues.DayOfWeek, List<LifeTask>> getGoogleCalendarLifeTasks(){
+    public static Map<DayOfWeek, List<LifeTask>> getGoogleCalendarLifeTasks(){
         try {
             Events events = getCalendarService().events().list("primary")
                     .setTimeMin(new DateTime(CommonUtils.getWeekStartDay()))

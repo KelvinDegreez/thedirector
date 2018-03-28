@@ -1,32 +1,32 @@
 package org.kelvin.webapp.schedule;
 
-import java.util.Date;
+
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface ScheduleDatabase {
 
-    Date getCurrentDay();
+    void setDailyTimeAllotment(LifeTask.Type type, Double timeAllotment);
 
-    Week getCurrentWeek();
+    void setWeeklyTimeAllotment(LifeTask.Type type, Double timeAllotment);
 
-    Week getWeekByDate(Date date);
+    void setMonthlyTimeAllotment(LifeTask.Type type, Double timeAllotment);
 
     DayQuota getCurrentDayQuota();
 
     List<DayQuota> getCurrentWeekDayQuotas();
 
-    DayQuota getDayQuotaForDate(Date date);
+    DayQuota getDayQuotaForDate(LocalDate date);
 
-    List<DayQuota> getDayQuotasForWeek(Week week);
+    List<DayQuota> getDayQuotasForDateRange(LocalDate startDate, LocalDate endDate);
 
-    Double getMaxAllotmentForDayByType(LifeTask.Type type);
+    Double getMaxDailyAllotmentByForType(LifeTask.Type type);
 
-    Double getMaxAllotmentForWeekByType(LifeTask.Type type);
+    Double getMaxWeeklyAllotmentForType(LifeTask.Type type);
 
-    Double getRemainingTimeForDay(Date date);
+    Double getRemainingTimeForDay(LocalDate date);
 
-    Double getRemainingTimeForDayByLifeTaskType(Date date, LifeTask.Type type);
+    Double getRemainingTimeForDayByLifeTaskType(LocalDate date, LifeTask.Type type);
 
     Double getRemainingTimeForWeek(Week week);
 
