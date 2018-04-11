@@ -6,11 +6,15 @@ import java.util.List;
 
 public interface ScheduleDatabase {
 
+    void clearDatabase();
+
     void setDailyTimeAllotment(LifeTask.Type type, Double timeAllotment);
 
     void setWeeklyTimeAllotment(LifeTask.Type type, Double timeAllotment);
 
     void setMonthlyTimeAllotment(LifeTask.Type type, Double timeAllotment);
+
+    void addLifeTask(LocalDate date, LifeTask task);
 
     DayQuota getCurrentDayQuota();
 

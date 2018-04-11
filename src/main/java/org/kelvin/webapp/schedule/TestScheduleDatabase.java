@@ -1,11 +1,8 @@
 package org.kelvin.webapp.schedule;
 
 
-import org.kelvin.webapp.director.DataValues;
 import org.kelvin.webapp.tools.CommonUtils;
 import org.kelvin.webapp.tools.DataGenerator;
-
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -33,7 +30,7 @@ public class TestScheduleDatabase implements ScheduleDatabase {
         db.setWeeklyTimeAllotment(LifeTask.Type.REST, 9.0);
         db.setWeeklyTimeAllotment(LifeTask.Type.SPIRIT, 7.0);
         db.setWeeklyTimeAllotment(LifeTask.Type.LIFE_GOAL, 6.0);
-        db.setWeeklyTimeAllotment(LifeTask.Type.RELATIONSHIP, 7.5);
+        db.setWeeklyTimeAllotment(LifeTask.Type.RELATIONSHIP, 10.5);
         db.setWeeklyTimeAllotment(LifeTask.Type.TASKS, 14.0);
         db.setWeeklyTimeAllotment(LifeTask.Type.UNKNOWN, 0.0);
 
@@ -45,6 +42,14 @@ public class TestScheduleDatabase implements ScheduleDatabase {
         return db;
     }
 
+    @Override
+    public void clearDatabase(){
+        dayQuotaMap.clear();
+        maxDailyTimeAllotmentMap.clear();
+        maxWeeklyTimeAllotmentMap.clear();
+        maxMonthlyTimeAllotmentMap.clear();
+        maxYearlyTimeAllotmentMap.clear();
+    }
 
     @Override
     public void setDailyTimeAllotment(LifeTask.Type type, Double timeAllotment) {
@@ -62,8 +67,24 @@ public class TestScheduleDatabase implements ScheduleDatabase {
     }
 
     @Override
+    public void addLifeTask(LocalDate date, LifeTask task){
+        if(dayQuotaMap.get(date) != null){
+            dayQuotaMap.get(date).addLifeTask(task);
+        }else{
+            List<LifeTask> tasks = new ArrayList<>();
+            tasks.add(task);
+            dayQuotaMap.put(date, new DayQuota(tasks));
+        }
+    }
+
+    @Override
     public DayQuota getCurrentDayQuota() {
-        return dayQuotaMap.get(LocalDate.now());
+        LocalDate now = LocalDate.now();
+        if(dayQuotaMap.containsKey(now)){
+            return dayQuotaMap.get(LocalDate.now());
+        }else{
+            return new DayQuota(new ArrayList<>());
+        }
     }
 
     @Override
@@ -79,7 +100,11 @@ public class TestScheduleDatabase implements ScheduleDatabase {
 
     @Override
     public DayQuota getDayQuotaForDate(LocalDate date) {
-        return dayQuotaMap.get(date);
+        if(dayQuotaMap.containsKey(date)){
+            return dayQuotaMap.get(date);
+        }else{
+            return new DayQuota(new ArrayList<>());
+        }
     }
 
     @Override
@@ -94,12 +119,19 @@ public class TestScheduleDatabase implements ScheduleDatabase {
 
     @Override
     public Double getMaxDailyAllotmentByForType(LifeTask.Type type) {
-        return maxDailyTimeAllotmentMap.get(type);
+        return maxDailyTimeAllotmentMap.getOrDefault(type, 0.0);
+
     }
 
     @Override
     public Double getMaxWeeklyAllotmentForType(LifeTask.Type type) {
-        return maxWeeklyTimeAllotmentMap.get(type);
+        if(maxWeeklyTimeAllotmentMap.containsKey(type)){
+            return maxWeeklyTimeAllotmentMap.get(type);
+        }else if(maxDailyTimeAllotmentMap.containsKey(type)){
+            return getMaxDailyAllotmentByForType(type)*7;
+        }else{
+            return 0.0;
+        }
     }
 
     @Override
@@ -136,10 +168,14 @@ public class TestScheduleDatabase implements ScheduleDatabase {
     @Override
     public Double getRemainingTimeForWeekByLifeTaskType(Week week, LifeTask.Type type) {
         List<DayQuota> quotas = getDayQuotasForDateRange(week.getStartDate(), week.getEndDate());
-        Double maxTime = maxDailyTimeAllotmentMap.get(type);
+        Double maxTime = maxWeeklyTimeAllotmentMap.get(type);
         Double timeUsed = 0.0;
         for(DayQuota quota : quotas){
             timeUsed += CommonUtils.getTotalTimeForLifeTasks_FilterByType(quota.getLifeTasks(), type);
+        }
+        if(maxTime - timeUsed < 0.0){
+            int pause=0;
+            pause++;
         }
         return maxTime - timeUsed;
     }

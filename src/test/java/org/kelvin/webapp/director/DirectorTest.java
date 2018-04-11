@@ -33,7 +33,7 @@ public class DirectorTest {
         return map;
     }
 
-   @Before
+    @Before
     public void setUp() throws Exception {
         db = TestScheduleDatabase.createWithFakeData();
         director = new TestDirector();
@@ -45,7 +45,7 @@ public class DirectorTest {
 
     }
 
-   @Test
+    @Test
     public void setScheduleDatabase() throws Exception {
        for(List<LifeTask> testLifeTasks : testLifeTasksMap.values()) {
            for (LifeTask task : testLifeTasks) {
@@ -57,7 +57,7 @@ public class DirectorTest {
        }
    }
 
-   @Test
+    @Test
     public void canDoToday() throws Exception {
         LocalDate today = LocalDate.now();
         DayOfWeek dayOfWeek = today.getDayOfWeek();
@@ -75,14 +75,14 @@ public class DirectorTest {
                 }
                 boolean valShouldDoWeek = sumTotalWeek <= db.getMaxWeeklyAllotmentForType(task.getType());
                 System.out.println(
-                        "---------------\n"+
+                        "\n---------------\n"+
                         "Remaining Day Time: "+db.getRemainingTimeForDay(today)+"\n"+
                         "Remaining Day Time for "+task.getType()+": "+db.getRemainingTimeForDayByLifeTaskType(today, task.getType())+"\n"+
                         "Task Time: "+task.getTimeCommitment()+"\n"+
                         "Able to Do: "+valAbleToDo+"\n"+
                         "Should Do: "+valShouldDoDay+"\n"+
                         "Task"+task+"\n"+
-                        "---------------\n");
+                        "---------------");
 
                 if(valShouldDoDay){
                     assertTrue("valAbleToDo can't be false if valShouldDoToday is true", valAbleToDo);
@@ -95,7 +95,7 @@ public class DirectorTest {
         }
     }
 
-   @Test
+    @Test
     public void canDoThisWeek() throws Exception {
         Week week = new Week(LocalDate.now());
         for (List<LifeTask> testLifeTasks : testLifeTasksMap.values()) {
@@ -114,14 +114,19 @@ public class DirectorTest {
                 }
                 boolean valShouldDoWeek = sumTotalWeek <= db.getMaxWeeklyAllotmentForType(task.getType());
                 System.out.println(
-                        "---------------\n"+
+                        "\n---------------\n"+
                         "Remaining Week Time: "+db.getRemainingTimeForWeek(week)+"\n"+
                         "Remaining Week Time for "+task.getType()+": "+db.getRemainingTimeForWeekByLifeTaskType(week, task.getType())+"\n"+
                         "Task Time: "+task.getTimeCommitment()+"\n"+
                         "Able to Do: "+valAbleToDo+"\n"+
                         "Should Do: "+valShouldDoWeek+"\n"+
                         "Task"+task+"\n"+
-                        "---------------\n");
+                        "---------------");
+
+                if(valShouldDoWeek){
+                    assertTrue("valAbleToDo can't be false if valShouldDoWeek is true", valAbleToDo);
+                }
+
                 assertEquals(
                         task + "\nval_AbleWeek?: " + valAbleToDo + "\nval_ShouldWeek?: " + valShouldDoWeek,
                         valAbleToDo && valShouldDoWeek, director.canDoThisWeek(task));
@@ -129,16 +134,42 @@ public class DirectorTest {
         }
     }
 
-   @Test
+    @Test
     public void canDoNextWeek() throws Exception {
     }
 
-   @Test
+    @Test
     public void canDoThisMonth() throws Exception {
     }
 
-   @Test
+    @Test
     public void canDoNextMonth() throws Exception {
+    }
+
+    @Test
+    public void dailyTaskLimitTest() throws Exception {
+        LocalDate today = LocalDate.now();
+        Double maxTimeAllotment = 12.0;
+        for(LifeTask.Type type : LifeTask.Type.values()){
+            db.clearDatabase();
+            db.setDailyTimeAllotment(type, maxTimeAllotment);
+            Double time = 0.0;
+            while (time <= maxTimeAllotment){
+                time += 1.0;
+                LifeTask task = new LifeTask("Test", type, 1.0, DataValues.Priority.NORMAL, DataValues.Urgency.NORMAL);
+                boolean canDoToday = director.canDoToday(task);
+                System.out.println(
+                        "\n---------------\n"+
+                                "Remaining Day Time: "+db.getRemainingTimeForDay(today)+"\n"+
+                                "Remaining Day Time for "+task.getType()+": "+db.getRemainingTimeForDayByLifeTaskType(today, task.getType())+"\n"+
+                                "Task Time: "+task.getTimeCommitment()+"\n"+
+                                "Can Do Today: "+canDoToday+"\n"+
+                                "Task"+task+"\n"+
+                                "---------------");
+                if(canDoToday) db.addLifeTask(today, task);
+                assertEquals(time+" < than maxTime of "+maxTimeAllotment+" but director said \"Can do today\"", time <= maxTimeAllotment, canDoToday);
+            }
+        }
     }
 
     private Map<LifeTask.Type, List<LifeTask>> createTestLifeTasksMap(){
@@ -160,5 +191,7 @@ public class DirectorTest {
         }
         return map;
     }
+
+
 
 }
