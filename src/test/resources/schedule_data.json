@@ -1,0 +1,120 @@
+{
+  "maxDailyTimeAllotmentMap": {
+    "LIFE_GOAL": 1.5,
+    "RELATIONSHIP": 1.5,
+    "REST": 1.5,
+    "SLEEP": 8.0,
+    "SPIRIT": 1.0,
+    "TASKS": 2.0,
+    "UNKNOWN": 0.0,
+    "WORK": 8.5
+  },
+  "maxMonthlyTimeAllotmentMap": {},
+  "maxWeeklyTimeAllotmentMap": {
+    "LIFE_GOAL": 6.0,
+    "RELATIONSHIP": 10.5,
+    "REST": 9.0,
+    "SLEEP": 56.0,
+    "SPIRIT": 7.0,
+    "TASKS": 14.0,
+    "UNKNOWN": 0.0,
+    "WORK": 42.5
+  },
+  "maxYearlyTimeAllotmentMap": {},
+  "taskList": [
+    {
+      "name": "Rest Time",
+      "priority": "NORMAL",
+      "repeatCount": 1,
+      "repeatType": "DAYS",
+      "repeatingDays": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ],
+      "timeCommitment": 0.5,
+      "type": "REST",
+      "urgency": "HIGH"
+    },
+    {
+      "name": "Quiet Time",
+      "priority": "NORMAL",
+      "repeatCount": 1,
+      "repeatType": "DAYS",
+      "repeatingDays": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ],
+      "timeCommitment": 0.5,
+      "type": "SPIRIT",
+      "urgency": "HIGH"
+    },
+    {
+      "name": "Work",
+      "priority": "NORMAL",
+      "repeatCount": 1,
+      "repeatType": "WEEKS",
+      "repeatingDays": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY"
+      ],
+      "timeCommitment": 6.0,
+      "type": "WORK",
+      "urgency": "HIGH"
+    },
+    {
+      "name": "Weekday Relationship",
+      "priority": "NORMAL",
+      "repeatCount": 1,
+      "repeatType": "WEEKS",
+      "repeatingDays": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY"
+      ],
+      "timeCommitment": 1.5,
+      "type": "RELATIONSHIP",
+      "urgency": "HIGH"
+    },
+    {
+      "name": "Weekend Relationship",
+      "priority": "NORMAL",
+      "repeatCount": 1,
+      "repeatType": "WEEKS",
+      "repeatingDays": [
+        "SATURDAY",
+        "SUNDAY"
+      ],
+      "timeCommitment": 1.5,
+      "type": "RELATIONSHIP",
+      "urgency": "HIGH"
+    },
+    {
+      "name": "Weekend Rest",
+      "priority": "NORMAL",
+      "repeatCount": 1,
+      "repeatType": "WEEKS",
+      "repeatingDays": [
+        "SATURDAY",
+        "SUNDAY"
+      ],
+      "timeCommitment": 0.5,
+      "type": "REST",
+      "urgency": "HIGH"
+    }
+  ]
+}

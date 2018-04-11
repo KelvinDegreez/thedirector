@@ -1,6 +1,7 @@
 package org.kelvin.webapp.schedule;
 
 
+import org.kelvin.webapp.apiObjects.ScheduleSetupData;
 import org.kelvin.webapp.tools.CommonUtils;
 import org.kelvin.webapp.tools.DataGenerator;
 import java.time.LocalDate;
@@ -42,6 +43,38 @@ public class TestScheduleDatabase implements ScheduleDatabase {
         return db;
     }
 
+    @Override
+    public void initializeData(ScheduleSetupData data) {
+        clearDatabase();
+        maxDailyTimeAllotmentMap.putAll(data.getMaxDailyTimeAllotmentMap());
+        maxWeeklyTimeAllotmentMap.putAll(data.getMaxWeeklyTimeAllotmentMap());
+        maxMonthlyTimeAllotmentMap.putAll(data.getMaxMonthlyTimeAllotmentMap());
+        maxYearlyTimeAllotmentMap.putAll(data.getMaxYearlyTimeAllotmentMap());
+
+        LocalDate startDate = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+        LocalDate endDate = LocalDate.of(LocalDate.now().getYear(), 12, 31);
+
+        List<LifeTask> tasks = data.getTaskList();
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            int dayNumber = date.getDayOfYear();
+            int weekNumber = new Week(date).getWeekNumber();
+            List<LifeTask> dayQuotaTasks = new ArrayList<>();
+            for(LifeTask task : tasks){
+                int repeatCount = task.getRepeatCount();
+                switch (task.getRepeatType()){
+                    case DAYS: if(dayNumber % repeatCount == 0 ) dayQuotaTasks.add(task); break;
+                    case WEEKS: if(weekNumber % repeatCount == 0 && task.getRepeatingDays().contains(date.getDayOfWeek())) dayQuotaTasks.add(task); break;
+                    case MONTHS:
+                        break;
+                    case YEARS:
+                        break;
+                }
+            }
+            if(!dayQuotaTasks.isEmpty()) {
+                dayQuotaMap.put(date, new DayQuota(dayQuotaTasks));
+            }
+        }
+    }
     @Override
     public void clearDatabase(){
         dayQuotaMap.clear();

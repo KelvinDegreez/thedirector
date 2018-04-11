@@ -3,6 +3,7 @@ package org.kelvin.webapp.director;
 import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
+import org.kelvin.webapp.apiObjects.ScheduleSetupData;
 import org.kelvin.webapp.schedule.DayQuota;
 import org.kelvin.webapp.schedule.LifeTask;
 import org.kelvin.webapp.schedule.TestScheduleDatabase;
@@ -146,6 +147,9 @@ public class DirectorTest {
     public void canDoNextMonth() throws Exception {
     }
 
+
+    // Functionality Tests
+
     @Test
     public void dailyTaskLimitTest() throws Exception {
         LocalDate today = LocalDate.now();
@@ -191,7 +195,5 @@ public class DirectorTest {
         }
         return map;
     }
-
-
 
 }

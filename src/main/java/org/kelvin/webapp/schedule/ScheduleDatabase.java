@@ -1,10 +1,14 @@
 package org.kelvin.webapp.schedule;
 
 
+import org.kelvin.webapp.apiObjects.ScheduleSetupData;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public interface ScheduleDatabase {
+
+    void initializeData(ScheduleSetupData data);
 
     void clearDatabase();
 
